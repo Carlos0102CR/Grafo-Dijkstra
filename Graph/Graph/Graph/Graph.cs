@@ -6,13 +6,6 @@ namespace Graph
 {
     public class Graph
     {
-        /// <summary>
-        /// 4 attributes
-        /// A list of vertices (to store node information for each index such as name/text)
-        /// a 2D array - our adjacency matrix, stores edges between vertices
-        /// a graphSize integer
-        /// a StreamReader, to read in graph data to create the data structure
-        /// </summary>
         private static List<Node> vertices;
 
         private static int[,] adjMatrix;
@@ -75,21 +68,20 @@ namespace Graph
         public void findPath(double xOrigin, double yOrigin, double xDestiny, double yDestiny)
         {
             int[] resltInd = new int[2];
+            bool end = false;
+            string rute = "";
+            int nextNode = resltInd[1];
 
             resltInd[0] = vertices.FindIndex(node => node.DataX1 == xOrigin && node.DataY1 == yOrigin);
             resltInd[1] = vertices.FindIndex(node => node.DataX1 == xDestiny && node.DataY1 == yDestiny);
 
             if (resltInd[0] == -1 || resltInd[1] == -1)
             {
-                Console.WriteLine("Algunos de los datos solicitados no existe.");
+                Console.WriteLine("Algunos de los datos solicitados no existen.");
                 return;
             }
 
             runDijkstra(resltInd);
-        }
-
-        void sortPathList()
-        {
             
         }
 
