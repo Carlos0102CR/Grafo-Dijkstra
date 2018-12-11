@@ -65,24 +65,90 @@ namespace Graph
             }
         }
 
-        public void findPath(double xOrigin, double yOrigin, double xDestiny, double yDestiny)
+        public double[,] findPath(double xOrigin, double yOrigin, double xDestiny, double yDestiny)
         {
             int[] resltInd = new int[2];
             bool end = false;
             string rute = "";
-            int nextNode = resltInd[1];
 
-            resltInd[0] = vertices.FindIndex(node => node.DataX1 == xOrigin && node.DataY1 == yOrigin);
-            resltInd[1] = vertices.FindIndex(node => node.DataX1 == xDestiny && node.DataY1 == yDestiny);
+            resltInd[0] = vertices.FindIndex(node => node.DataX1.Equals(xOrigin) && node.DataY1.Equals(yOrigin));
+            resltInd[1] = vertices.FindIndex(node => node.DataX1.Equals(xDestiny) && node.DataY1.Equals(yDestiny));
 
             if (resltInd[0] == -1 || resltInd[1] == -1)
             {
                 Console.WriteLine("Algunos de los datos solicitados no existen.");
-                return;
+                return null;
             }
 
             runDijkstra(resltInd);
+            double[,] nodePaths = getPathFromList(resltInd);
             
+
+            return nodePaths;//Return a Matrix with the xData/yData/weight of each of the Nodes in te path
+        }
+
+        private double[,] getPathFromList(int[] resltInd)
+        {
+            int actNode = resltInd[1];
+            int size = 0;
+            double[,] nodePaths = new double[graphSize, 3];
+            double[,] sortedNodePaths;
+            int j = 0;
+            
+            for (int i = 0; i < graphSize; i++)
+            {
+                nodePaths[i, 0] = vertices[actNode].DataX1;
+                nodePaths[i, 1] = vertices[actNode].DataX1;
+                nodePaths[i, 2] = pathList[actNode,1];
+                if (actNode == resltInd[0])
+                {
+                    size = i;
+                    break;
+                }
+
+                actNode = pathList[actNode, 0];
+            }
+
+            sortedNodePaths = new double[size+1,3];
+            
+            for (int i = size; i >= 0; i--)
+            {
+                sortedNodePaths[j,0] = nodePaths[i,0];
+                sortedNodePaths[j,1] = nodePaths[i,1];
+                sortedNodePaths[j,2] = nodePaths[i,2];
+                j++;
+            }
+            
+            return sortedNodePaths;
+        }
+
+        public double[,] getAdyacentNodes(double x, double y)
+        {
+            int index;
+            int size = 0;
+            double[,] adyacentNodes = new double[graphSize, 3];
+            double[,] fixedAdyacentNodes;
+
+            index = vertices.FindIndex(node => node.DataX1.Equals(x) && node.DataY1.Equals(y));
+            for (int i = 0; i < graphSize; i++)
+            {
+                if (adjMatrix[index, i] != 0)
+                {
+                    adyacentNodes[size, 0] = vertices[i].DataX1;
+                    adyacentNodes[size, 1] = vertices[i].DataY1;
+                    adyacentNodes[size, 2] = adjMatrix[index, i];
+                    size++;
+                }
+            }
+            fixedAdyacentNodes = new double[size,3];
+            for (int i = 0; i < size; i++)
+            {
+                fixedAdyacentNodes[i, 0] = adyacentNodes[i, 0];
+                fixedAdyacentNodes[i, 1] = adyacentNodes[i, 1];
+                fixedAdyacentNodes[i, 2] = adyacentNodes[i, 2];
+            }
+
+            return fixedAdyacentNodes;
         }
 
         private void runDijkstra(int[] resltInd) //Runs Algorithm on the adjacency matrix

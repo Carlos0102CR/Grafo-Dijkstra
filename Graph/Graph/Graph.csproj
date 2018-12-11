@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Graph\Graph.cs" />
+    <Compile Include="Graph\GraphController.cs" />
     <Compile Include="Node\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
